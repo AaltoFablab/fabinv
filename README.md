@@ -8,29 +8,55 @@ Ever not been able to find stuff and to get started at a place like a Fab Lab? T
 
 One could try the README-driven-development strategy here.
 
-- [ ] For the backend Python would be the easiest I believe. Let's try the [graphene](https://github.com/graphql-python/graphene) GraphQL library and build a simple end-point which would return us a fake inventory table.
+- [x] For the backend Python would be the easiest I believe. Let's try the [graphene](https://github.com/graphql-python/graphene) GraphQL library and build a simple end-point which would return us a fake inventory table.
+- [ ] Backend: Add simple search to return items based on keyword provided.
 - [ ] For that GraphQL endpoint, let's build a front-end. Which framework to use has to be decided, but we could go with RiotJS and JQuery, using Skeleton for style initially.
 
 ## Setting up
 
-In order to not mess up your existing Python ecosystem, make use of [Virtualenv](https://virtualenv.pypa.io/en/latest/). Install it with `pip`. **Please use Python3!**
+Start with making sure that you have Python 3 installed. 
 
+```bash
+python3 --version
+# Python 3.7.3
 ```
+
+**Optional**: To not mess up your existing Python ecosystem, make use of [Virtualenv](https://virtualenv.pypa.io/en/latest/). Install it with `pip3`. **Please use pip3!**
+
+```bash
 pip3 install virtualenv
 ```
 
-Enter the project directory and set it up. Some parts of this have been taken from the [Graphene Mongo](https://graphene-mongo.readthedocs.io/en/latest/tutorial.html#setup-the-project) project.
+**Optional**: Enter the project directory and set up virtualenv.
 
-```
+```bash
+cd fabinv/backend
 virtualenv env
 source env/bin/activate
-
-# Install required packages
-pip install Flask
-pip install Flask-GraphQL
-pip install graphene-mongo
-
-# Install mongomock or you have to run a real mongo server instance somewhere.
-pip install mongomock
 ```
 
+Install dependencies. If you set up vitualenv, `python` should be Python 3 and `pip` should map to `pip3`.
+
+```bash
+pip install -r requirements.txt
+```
+
+Run the backend application.
+
+```bash
+python app.py
+# Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+```
+
+Open browser and open `http://127.0.0.1:5000/graphql`. Try out the following query.
+
+```jquery
+{ 
+  items {
+    name,
+    location {
+      name
+    } 
+  }
+}
+```
