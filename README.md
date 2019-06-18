@@ -10,7 +10,9 @@ One could try the README-driven-development strategy here.
 
 - [x] For the backend Python would be the easiest I believe. Let's try the [graphene](https://github.com/graphql-python/graphene) GraphQL library and build a simple end-point which would return us a fake inventory table.
 - [ ] Backend: Add simple search to return items based on keyword provided.
-- [ ] For that GraphQL endpoint, let's build a front-end. Which framework to use has to be decided, but we could go with RiotJS and JQuery, using Skeleton for style initially.
+- [ ] For that GraphQL endpoint, let's build a front-end. Which framework to use has to be decided, but we could go with RiotJS and JQuery, using Skeleton for style initially. For GraphQL client library, let's try [GraphQL.js](https://github.com/f/graphql.js).
+- [ ] Frontent: Create a fake search where on each input field change, GraphQL endpoint is called.
+- [ ] Frontend: Integrate simple search feature from backend. 
 
 ## Setting up
 
