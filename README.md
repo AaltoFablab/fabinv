@@ -9,9 +9,9 @@ Ever not been able to find stuff and to get started at a place like a Fab Lab? T
 - [x] For the backend Python would be the easiest I believe. Let's try the [graphene](https://github.com/graphql-python/graphene) GraphQL library and build a simple end-point which would return us a fake inventory table.
 - [ ] Backend: Add simple search to return items based on keyword provided.
 - [ ] Backend: Add real MongoDB database with instructions how to set up locally.
-- [ ] For that GraphQL endpoint, let's build a front-end. Which framework to use has to be decided, but we could go with RiotJS and JQuery, using Skeleton for style initially. For GraphQL client library, let's try [GraphQL.js](https://github.com/f/graphql.js).
-- [ ] Frontend: Create a fake search where on each input field change, GraphQL endpoint is called.
+- [ ] Frontend: Create a fake search where on each input field change, GraphQL endpoint is called. Using [GraphQL.js](https://github.com/f/graphql.js) and [jQuery](https://jquery.com/).
 - [ ] Frontend: Integrate simple search feature from backend. 
+- [ ] Frontend: Port the solution to RiotJS.
 
 ## Setting up
 
