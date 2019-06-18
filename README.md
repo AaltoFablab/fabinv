@@ -63,4 +63,6 @@ Open browser and open `http://127.0.0.1:5000/graphql`. Try out the following que
 
 ## Development
 
-Please read about [GitFlow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) and [Semantic Versioning](https://semver.org/). Work in and commit changes to `develop` branch. If working something speciffic, create a feature branch.
+1. Please read about [GitFlow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) and [Semantic Versioning](https://semver.org/). 
+2. Work in and commit changes to `develop` branch. 
+3. If working something speciffic, create a feature branch.
