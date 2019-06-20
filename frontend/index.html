@@ -3,42 +3,78 @@
   <head>
     <meta charset="UTF-8">
     <title>dummy search</title>
+    <style>
+      body {
+        background-image: url("images/inv-mngmnt-background.jpg");
+        background-position: center;
+        background-size: cover;
+        margin: 0;
+        padding: 0;
+        background: #8168ff;    /* interchangeable color - background */
+      }
+      .header {
+        position: absolute;
+        top: 10%;
+        left: 10%;
+        width: 330px;
+        height: 60px;
+        background-color: white;
+      }
+      #header-text {
+        position: relative;
+        top: -15%;
+        left: 27%;
+        font-family: helvetica;
+        color: #8168ff;
+      }
+      .search-box {
+        position: absolute;
+        top: 20%;
+        left:10%;
+        width: 330px;
+        background-color: white;  /* interchangeable color - search box */
+        height: 50px;
+        border-radius: 0px;
+        padding: 0px;
+      }
+      .search-text {
+        font-weight: bold;
+        border: none;
+        outline: none;
+        background: none;
+        padding: 0;
+        color: black;             /* interchangeable color - text */
+        font-size: 20px;
+        position: relative;
+        top: 14px;
+        left: 20px
+      }
+
+    </style>
   </head>
+
   <body>
+    <div type="text" class="header">
+      <h1 id="header-text">
+        Inventory
+      </h1>
+    </div>
     <div type="text" class="search-box">
       <input type="text" name="" class="search-text" placeholder="search for items..."/>
       <a class="search-button">
     </div>
+
+    <!--- Change pathing --->                             <!--- ! --->
+    <script src="libraries/jquery-3.4.1.min.js"></script>
+    <script>
+      $(document).ready(function() {
+
+        $.ajax({
+          type 'GET',
+          url:
+        });
+
+      });
+    </script>
   </body>
 </html>
-
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-    background: blue;       /* interchangeable color */
-  }
-
-  .search-box {
-    position: absolute;
-    top: 20%;
-    left:10%;
-    width: 330px;
-    background: white;      /* interchangeable color */
-    height: 50px;           /* ! */
-    border-radius: 0px;
-    padding: 0px;
-  }
-  .search-text {
-    font-weight: bold;
-    border: none;
-    outline: none;
-    background: none;
-    padding: 0;
-    color: black;          /* interchangeable color */
-    font-size: 20px;
-    position: relative;
-    top: 14px;
-    left: 20px
-  }
-</style>
