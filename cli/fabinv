@@ -1,0 +1,3 @@
+#!/bin/bash
+curl -sd '{items{name,price,location{name}}}' -H 'Content-Type: application/graphql' 127.0.0.1:5000/graphql | jq -r '.data.items[] | "\(.name), \(.price)€, \(.location.name)"' | grep --color -s -i $""$@
+
