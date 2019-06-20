@@ -2,10 +2,10 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>dummy search</title>
+    <title>Inventory</title>
     <style>
       body {
-        background-image: url("images/inv-mngmnt-background.jpg");
+        background-image: "images/inv-mngmnt-background.jpg";
         background-position: center;
         background-size: cover;
         margin: 0;
@@ -49,6 +49,44 @@
         top: 14px;
         left: 20px
       }
+      .items {
+        position: absolute;
+        top: 35%;
+        left: 10%;
+        width: 75%;
+        height: 450px;
+        background-color: white;
+      }
+      #names {
+        position: absolute;
+        width: 81%;
+
+        height: 100%;
+
+        background-color: none; /* debugging */
+      }
+      #list-names {
+        font-weight: bold;
+        font-family: helvetica;
+        color: #b5b5b5;
+        padding-left: 30px;
+        list-style-type: square;
+        display: block;
+        float: left;
+      }
+
+      #items-table {
+        position: absolute;
+        font-weight: bold;
+        font-family: helvetica;
+        color: #b5b5b5;
+        padding: 10px;
+
+        width: 100%;
+        height: 100%;
+
+        background-color: none;
+      }
 
     </style>
   </head>
@@ -64,14 +102,48 @@
       <a class="search-button">
     </div>
 
+    <div class="items">
+
+      <div id="names">
+
+        <table id="items-table">
+          <tr>
+            <td>Name</td>
+            <td>Price</td>
+            <td>Location</td>
+          </tr>
+        </table>
+
+      </div>
+
+    </div>
+
     <!--- Change pathing --->                             <!--- ! --->
-    <script src="libraries/jquery-3.4.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script>
       $(document).ready(function() {
 
         $.ajax({
-          type 'GET',
-          url:
+
+          type: 'POST',
+          url:"/graphql",
+          contentType: "application/graphql",
+          data: "{items{name,price}}",
+
+          success: function(result) {
+
+            console.log(result);
+            let items = result.data.items;
+            for(var i = 0; i < items.length; i++) {
+
+              console.log(items[i]);
+              $("#list-names").append("<li>"+items[i].name+"</li>");
+              $("#items-table").append("<tr><td>"+items[i].name+"</td><td>"+items[i].price+"</td></tr>");
+
+            }
+
+          }
+
         });
 
       });
