@@ -5,7 +5,8 @@
     <title>Inventory</title>
     <style>
       body {
-        background-image: "images/inv-mngmnt-background.jpg";
+        background-image: url('images/debug.jpg');
+
         background-position: center;
         background-size: cover;
         margin: 0;
@@ -15,7 +16,7 @@
       .header {
         position: absolute;
         top: 10%;
-        left: 10%;
+        left: 90px;
         width: 330px;
         height: 60px;
         background-color: white;
@@ -29,8 +30,7 @@
       }
       .search-box {
         position: absolute;
-        top: 20%;
-        left:10%;
+        top: 70px;
         width: 330px;
         background-color: white;  /* interchangeable color - search box */
         height: 50px;
@@ -52,42 +52,50 @@
       .items {
         position: absolute;
         top: 35%;
-        left: 10%;
-        width: 75%;
-        height: 450px;
+        left: 90px;
+        width: 600px;
+        height: 500px;
         background-color: white;
       }
       #names {
         position: absolute;
-        width: 81%;
-
+        width: 100%;
         height: 100%;
 
         background-color: none; /* debugging */
       }
-      #list-names {
-        font-weight: bold;
-        font-family: helvetica;
-        color: #b5b5b5;
-        padding-left: 30px;
-        list-style-type: square;
-        display: block;
-        float: left;
-      }
-
       #items-table {
         position: absolute;
         font-weight: bold;
         font-family: helvetica;
-        color: #b5b5b5;
+        font-size: 13px;
+        color: #969696;
         padding: 10px;
 
         width: 100%;
         height: 100%;
 
         background-color: none;
-      }
 
+        border-collapse: separate;
+        border-spacing: 0px;
+      }
+      #details {
+        position: absolute;
+        top: 35%;
+        left: 700px;
+
+        height: 500px;
+        width: 600px;
+
+        background-color: white;
+      }
+      td {
+        border: 1px solid #b5b5b5;
+        padding-left: 5px;
+
+        background-color: white;
+      }
     </style>
   </head>
 
@@ -96,10 +104,14 @@
       <h1 id="header-text">
         Inventory
       </h1>
+      <div type="text" class="search-box">
+        <input type="text" name="" class="search-text" placeholder="search for items..."/>
+        <a class="search-button">
+      </div>
     </div>
-    <div type="text" class="search-box">
-      <input type="text" name="" class="search-text" placeholder="search for items..."/>
-      <a class="search-button">
+
+    <div id="details">
+
     </div>
 
     <div class="items">
@@ -109,7 +121,7 @@
         <table id="items-table">
           <tr>
             <td>Name</td>
-            <td>Price</td>
+            <td>Price (€)</td>
             <td>Location</td>
           </tr>
         </table>
@@ -128,7 +140,7 @@
           type: 'POST',
           url:"/graphql",
           contentType: "application/graphql",
-          data: "{items{name,price}}",
+          data: "{items{name,price,location{name}}}",
 
           success: function(result) {
 
@@ -137,8 +149,8 @@
             for(var i = 0; i < items.length; i++) {
 
               console.log(items[i]);
-              $("#list-names").append("<li>"+items[i].name+"</li>");
-              $("#items-table").append("<tr><td>"+items[i].name+"</td><td>"+items[i].price+"</td></tr>");
+
+              $("#items-table").append("<tr><td>"+items[i].name+"</td><td>"+items[i].price+"</td><td>"+items[i].location.name+"</td></tr>");
 
             }
 
