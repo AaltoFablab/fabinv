@@ -18,8 +18,11 @@ class Query(graphene.ObjectType):
     # http://docs.mongoengine.org/guide/querying.html
     def resolve_items(self, info, search=''):
         if(search != ''):
-            return list(ItemModel.objects.filter(name__icontains=search))
-        return list(ItemModel.objects.all())
+            options = {
+                'name__icontains' : search
+            }
+            return list(ItemModel.objects(**options))[:10]
+        return list(ItemModel.objects.all())[:10]
 
     def resolve_locations(self, info):
         return list(LocationModel.objects.all())
