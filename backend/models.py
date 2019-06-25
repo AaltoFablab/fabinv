@@ -5,12 +5,12 @@ from mongoengine.fields import (
 )
 
 class Location(Document):
-    meta = {'collection': 'location'}
+    meta = {'collection': 'locations'}
     name = StringField(required=True)
     modified = DateTimeField(default=datetime.now)
 
 class Item(Document):
-    meta = {'collection': 'item'}
+    meta = {'collection': 'items'}
     name = StringField(required=True)
     location = ReferenceField(Location)
     price = FloatField(required=True)

@@ -12,10 +12,13 @@ class Location(MongoengineObjectType):
         model = LocationModel
 
 class Query(graphene.ObjectType):
-    items = graphene.List(Item)
+    items = graphene.List(Item, search=graphene.String(required=False))
     locations = graphene.List(Location)
     
-    def resolve_items(self, info):
+    # http://docs.mongoengine.org/guide/querying.html
+    def resolve_items(self, info, search=''):
+        if(search != ''):
+            return list(ItemModel.objects.filter(name__icontains=search))
         return list(ItemModel.objects.all())
 
     def resolve_locations(self, info):
