@@ -7,7 +7,7 @@ Ever not been able to find stuff and to get started at a place like a Fab Lab? T
 ## Todo
 
 - [x] For the backend Python would be the easiest I believe. Let's try the [graphene](https://github.com/graphql-python/graphene) GraphQL library and build a simple end-point which would return us a fake inventory table.
-- [ ] Backend: Add simple search to return items based on keyword provided.
+- [x] Backend: Add simple search to return items based on keyword provided.
 - [ ] Backend: Add real MongoDB database with instructions how to set up locally.
 - [ ] Frontend: Create a fake search where on each input field change, GraphQL endpoint is called. Using [GraphQL.js](https://github.com/f/graphql.js) and [jQuery](https://jquery.com/).
 - [ ] Frontend: Integrate simple search feature from backend. 
