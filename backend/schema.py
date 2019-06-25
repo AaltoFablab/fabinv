@@ -22,9 +22,9 @@ class Query(graphene.ObjectType):
                 'name__icontains' : search
             }
             return list(ItemModel.objects(**options))[:10]
-        return list(ItemModel.objects.all())[:10]
+        return list(ItemModel.objects.all().order_by('name'))[:10]
 
     def resolve_locations(self, info):
-        return list(LocationModel.objects.all())
+        return list(LocationModel.objects.all().order_by('name'))
 
 schema = graphene.Schema(query=Query)
