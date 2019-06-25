@@ -16,7 +16,7 @@ class Location(MongoengineObjectType):
 class Query(graphene.ObjectType):
     items_description = 'Returns an array of items in the fab inventory. Use the `search` argument to filter them. If no arguments are provided, all items are returned, ordered by name.'
     items = graphene.List(Item, search = graphene.String( required = False, default_value = '' ), description = items_description)
-    locations_description = 'Returns an array of locations in the fab inventory. All locations are returnes, ordered by name.'
+    locations_description = 'Returns an array of locations in the fab inventory. All locations are returned, ordered by name.'
     locations = graphene.List(Location, description = locations_description)
     
     # http://docs.mongoengine.org/guide/querying.html
