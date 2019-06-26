@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Demo</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+
+    <form id="test">
+        <input type="text" name="search" id="search">
+    </form>
+
+    <div id="output">
+        <table></table>
+    </div>
+
+    <script>
+        function processInput(){
+            console.log('asd');
+        }
+
+        function updateItemTable(data){
+            $('#output table').empty();
+
+            data.data.items.forEach(function(element){
+                $('#output table').append('<tr><td>' + element.name + '</td><td>' + element.price + '</td></tr>');
+            });
+        }
+
+        $(function(){
+            $('#search').bind('input propertyChange', function(event){
+                if(event.target.value == ''){
+                    return;
+                }
+
+                $.ajax({
+                    method: 'POST',
+                    url: 'http://127.0.0.1:5000/graphql',
+                    contentType: 'application/graphql',
+                    data: '{items(search:"' + 
+                        event.target.value + 
+                        '"){name, price, location{name}}}',
+                    success: function(data){
+                        updateItemTable(data);
+                    },
+                    error: function(xhr, status, error){
+                        console.log(status);
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

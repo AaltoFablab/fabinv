@@ -15,6 +15,10 @@ app.add_url_rule(
 def index():
     return render_template('index.html')
 
+@app.route('/demo')
+def demo():
+    return render_template('input.html')
+
 if __name__ == '__main__':
     init_db()
     app.run()
