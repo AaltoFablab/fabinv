@@ -26,18 +26,23 @@ class Query(graphene.ObjectType):
 
         if search != '':
             terms = search.split()
-            for item in all_items:
-                if any(term.lower() in item.name.lower() for term in terms):
-                    found_items.append(item)
-                    continue
-                if any(term.lower() in item.location.name.lower() for term in terms):
-                    found_items.append(item)
-                    continue
-                if any(term.lower() in str(item.price) for term in terms):
-                    found_items.append(item)
-                    continue
 
-            return found_items
+            # Start by looking for first terms first
+            for term in terms:
+                for item in all_items:
+                    if term.lower() in item.name.lower():
+                        found_items.append(item)
+                        continue
+                    if term.lower() in item.location.name.lower():
+                        found_items.append(item)
+                        continue
+                    if term.lower() in str(item.price):
+                        found_items.append(item)
+                        continue
+
+            # Make sure we do not include duplicates and maintain order
+            # https://stackoverflow.com/a/7961390/1753004
+            return list(dict.fromkeys(found_items))
         else:
             return all_items;
 
