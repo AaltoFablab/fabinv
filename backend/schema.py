@@ -37,10 +37,6 @@ class Query(graphene.ObjectType):
                     found_items.append(item)
                     continue
 
-            def sort_by_name(elem):
-                return elem.name
-
-            found_items.sort(key=sort_by_name)
             return found_items
         else:
             return all_items;
