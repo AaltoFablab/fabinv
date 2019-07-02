@@ -1,9 +1,22 @@
 from mongoengine import connect
-from models import Location, Item
+from models import Created, Location, Item
 
-connect('fabinv', host='mongomock://localhost', alias='default')
+connect(
+    'fabinv', 
+    host='127.0.0.1', 
+    port=27017, 
+    username='fabadmin', 
+    password='thereisnofuture', 
+    authentication_source='admin')
 
 def init_db():
+    # Check if we did this already
+    if Created.objects(yes=True).count():
+        return
+    else:
+        creation = Created()
+        creation.save()
+
     # Locations
     storage = Location(name='Storage Room')
     storage.save()
@@ -46,3 +59,5 @@ def init_db():
 
     openpir = Item(name='Sparkfun OPENPIR Motion Sensor', location=electronics, price=20.0)
     openpir.save()
+
+    print('Database should now be filled with demo data.')

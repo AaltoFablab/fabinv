@@ -1,8 +1,13 @@
 from datetime import datetime
 from mongoengine import Document
 from mongoengine.fields import (
-    DateTimeField, ReferenceField, StringField, FloatField,
+    DateTimeField, ReferenceField, StringField, FloatField, BooleanField,
 )
+
+class Created(Document):
+    meta = {'collection': 'created'}
+    yes = BooleanField(default=True)
+    modified = DateTimeField(default=datetime.now)
 
 class Location(Document):
     meta = {'collection': 'locations'}
