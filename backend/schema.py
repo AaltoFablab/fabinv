@@ -18,15 +18,31 @@ class Query(graphene.ObjectType):
     items = graphene.List(Item, search = graphene.String( required = False, default_value = '' ), description = items_description)
     locations_description = 'Returns an array of locations in the fab inventory. All locations are returned, ordered by name.'
     locations = graphene.List(Location, description = locations_description)
-    
+
     # http://docs.mongoengine.org/guide/querying.html
     def resolve_items(self, info, search):
-        if(search != ''):
-            options = {
-                'name__icontains' : search
-            }
-            return list(ItemModel.objects(**options))[:10]
-        return list(ItemModel.objects.all().order_by('name'))
+        all_items = ItemModel.objects.all()
+        found_items = []
+
+        if search != '':
+            for item in all_items:
+                if search.lower() in item.name.lower():
+                    found_items.append(item)
+                    continue
+                if search.lower() in item.location.name.lower():
+                    found_items.append(item)
+                    continue
+                if search.lower() in str(item.price):
+                    found_items.append(item)
+                    continue
+
+            def sort_by_name(elem):
+                return elem.name
+
+            found_items.sort(key=sort_by_name)
+            return found_items
+        else:
+            return all_items;
 
     def resolve_locations(self, info):
         return list(LocationModel.objects.all().order_by('name'))
