@@ -14,6 +14,27 @@ class Location(MongoengineObjectType):
         model = LocationModel
         description = 'The `Location` scalar describes a location of an `Item` in the fab inventory.'
 
+class AddLocation(graphene.Mutation):
+    '''
+    Adds new location to database.
+    `name` is required.
+    '''
+
+    class Arguments:
+        name = graphene.String(required=True)
+
+    ok = graphene.Boolean()
+    location = graphene.Field(lambda: Location)
+
+    def mutate(self, info, name):
+        if name == '':
+            raise GraphQLError('Location name must not be empty')
+        locationToStore = LocationModel(name=name)
+        locationToStore.save()
+        location = Location(name=name)
+        ok = True
+        return AddLocation(location=location, ok=ok)
+
 class AddItem(graphene.Mutation):
     '''
     Adds new item to database. 
@@ -42,6 +63,7 @@ class AddItem(graphene.Mutation):
 
 class Mutations(graphene.ObjectType):
     add_item = AddItem.Field()
+    add_location = AddLocation.Field()
 
 class Query(graphene.ObjectType):
     items_description = 'Returns an array of items in the fab inventory. Use the `search` argument to filter them. If no arguments are provided, all items are returned, ordered by name.'
