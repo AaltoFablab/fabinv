@@ -8,12 +8,73 @@ Ever not been able to find stuff and to get started at a place like a Fab Lab? T
 
 - [x] For the backend Python would be the easiest I believe. Let's try the [graphene](https://github.com/graphql-python/graphene) GraphQL library and build a simple end-point which would return us a fake inventory table.
 - [x] Backend: Add simple search to return items based on keyword provided.
-- [ ] Backend: Add real MongoDB database with instructions how to set up locally.
+- [x] Backend: Add real MongoDB database with instructions how to set up locally.
 - [ ] Frontend: Create a fake search where on each input field change, GraphQL endpoint is called. Using [GraphQL.js](https://github.com/f/graphql.js) and [jQuery](https://jquery.com/).
 - [ ] Frontend: Integrate simple search feature from backend. 
 - [ ] Frontend: Port the solution to [RiotJS](https://riot.js.org/).
 
-## Setting up
+## Setting up MongoDB Instance
+
+First, follow the instructions on the [official MongoDB documentation](https://docs.mongodb.com/manual/installation/) site to install MongoDB in the first place.
+
+Start up your MongoDB instance. Make sure you know where your config file is.
+
+```bash
+mongo --port 27017 --config /usr/local/etc/mongod.conf
+```
+
+Connect to your MongoDB instance and add an admin user.
+
+```bash
+mongo --port 27017
+```
+
+```mongo
+use admin
+db.createUser(
+  {
+    user: 'fabadmin',
+    pwd: 'thereisnofuture',
+    roles: [ { role: 'root', db: 'admin' } ]
+  }
+)
+```
+
+Shut down MongoDB and exit `mongo` shell.
+
+```mongo
+db.adminCommand( { shutdown: 1 } )
+exit
+```
+
+Start it again. This time with `--auth` flag.
+
+```bash
+mongod --auth --port 27017 --config /usr/local/etc/mongod.conf
+```
+
+Best would be if you would have mongodb running in the background as daemon. 
+
+## Connecting to MongoDB and Creating Database
+
+To create the `fabinv` database we need to use the `mongo` shell. Since we set up the username and password authentication in the previous step, use the following command to connect to the database via the `mongo` shell.
+
+```bash
+mongo --port 27017 -u "fabadmin" --authenticationDatabase "admin" -p
+```
+
+Enter password you provided in the DB setup step and you should see a `>` in front of your text cursor.
+
+To create the `fabinv` database use the following.
+
+```mongo
+use fabinv
+```
+
+You won't be able to see it yet by using the `show dbs` command. It will become visible only after we insert at least one document. This will be done automatically during the **Setting up Python Environment** step.
+
+
+## Setting up Python Environment
 
 Start with making sure that you have Python 3 installed. 
 
@@ -51,7 +112,7 @@ python app.py
 
 Open browser and open `http://127.0.0.1:5000/graphql`. Try out the following query.
 
-```jquery
+```graphql
 { 
   items {
     name,
