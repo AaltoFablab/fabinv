@@ -25,14 +25,15 @@ class Query(graphene.ObjectType):
         found_items = []
 
         if search != '':
+            terms = search.split()
             for item in all_items:
-                if search.lower() in item.name.lower():
+                if any(term.lower() in item.name.lower() for term in terms):
                     found_items.append(item)
                     continue
-                if search.lower() in item.location.name.lower():
+                if any(term.lower() in item.location.name.lower() for term in terms):
                     found_items.append(item)
                     continue
-                if search.lower() in str(item.price):
+                if any(term.lower() in str(item.price) for term in terms):
                     found_items.append(item)
                     continue
 
