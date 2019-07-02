@@ -55,6 +55,16 @@ class AddItem(graphene.Mutation):
     item = graphene.Field(lambda: Item)
 
     def mutate(self, info, name, price, locationId):
+        if name == '':
+            raise GraphQLError('Item name must not be empty')
+
+        if locationId == '':
+            raise GraphQLError('Location ID must not be empty')
+
+        # Check if item with the same name exists
+        if ItemModel.objects(name__iexact=name).first() != None:
+            raise GraphQLError('Item name must be unique')
+
         locationFound = LocationModel.objects(id=locationId).first()
         if locationFound == None:
             raise GraphQLError('No location with ID found')
