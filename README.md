@@ -127,6 +127,37 @@ Open browser and open `http://127.0.0.1:5000/graphql`. Try out the following que
 }
 ```
 
+## Mutations
+
+Mutations let you change the underlying database. Two basic ones are `addItem` and `addLocation` mutations. Location ID's are needed to add new items. Below you can see example GraphQL calls for both.
+
+**Adding Locations**
+```
+mutation locationAdd {
+  addLocation(name: "3D Printing Room") {
+    location {
+      name
+    }
+  }
+}
+```
+
+**Adding Items**
+```
+mutation itemAdd {
+  addItem(name: "Nails M2 30mm", price: 0.0, locationId: "5d1b0dcf036b2986fb8ccad7") {
+    item {
+      name,
+      price,
+      location {
+        name
+      }
+    }
+  }
+}
+
+```
+
 ## Development
 
 1. Please read about [GitFlow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) and [Semantic Versioning](https://semver.org/). 
