@@ -29,6 +29,11 @@ class AddLocation(graphene.Mutation):
     def mutate(self, info, name):
         if name == '':
             raise GraphQLError('Location name must not be empty')
+        
+        # Check if location with the same name exists
+        if LocationModel.objects(name__iexact=name).first() != None:
+            raise GraphQLError('Location name must be unique')
+
         locationToStore = LocationModel(name=name)
         locationToStore.save()
         location = Location(name=name)
