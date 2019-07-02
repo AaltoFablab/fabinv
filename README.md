@@ -10,6 +10,7 @@ Ever not been able to find stuff and to get started at a place like a Fab Lab? T
 - [x] Backend: Add simple search to return items based on keyword provided.
 - [x] Backend: Add real MongoDB database with instructions how to set up locally.
 - [x] Backend: Add search across multiple fields and collections.
+- [ ] Backend: Add mutation to add new items and locations
 - [ ] Frontend: Create a fake search where on each input field change, GraphQL endpoint is called. Using [GraphQL.js](https://github.com/f/graphql.js) and [jQuery](https://jquery.com/).
 - [ ] Frontend: Integrate simple search feature from backend. 
 - [ ] Frontend: Port the solution to [RiotJS](https://riot.js.org/).
