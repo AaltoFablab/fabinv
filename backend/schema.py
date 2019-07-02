@@ -2,6 +2,7 @@ import graphene
 from graphene_mongo import MongoengineConnectionField, MongoengineObjectType
 from models import Location as LocationModel
 from models import Item as ItemModel
+from graphql import GraphQLError
 
 class Item(MongoengineObjectType):
     class Meta: 
@@ -12,6 +13,35 @@ class Location(MongoengineObjectType):
     class Meta:
         model = LocationModel
         description = 'The `Location` scalar describes a location of an `Item` in the fab inventory.'
+
+class AddItem(graphene.Mutation):
+    '''
+    Adds new item to database. 
+    `name`, `price` and `locationId` are requred.
+    '''
+
+    class Arguments:
+        name = graphene.String(required=True)
+        price = graphene.Float(required=True)
+        locationId = graphene.String(required=True)
+
+    ok = graphene.Boolean()
+    item = graphene.Field(lambda: Item)
+
+    def mutate(self, info, name, price, locationId):
+        locationFound = LocationModel.objects(id=locationId).first()
+        if locationFound == None:
+            raise GraphQLError('No location with ID found')
+
+        # Location found, proceed with details
+        itemToStore = ItemModel(name=name, price=price, location=locationFound)
+        itemToStore.save()
+        item = Item(name=name, price=price, location=locationFound)
+        ok = True
+        return AddItem(item=item, ok=ok)
+
+class Mutations(graphene.ObjectType):
+    add_item = AddItem.Field()
 
 class Query(graphene.ObjectType):
     items_description = 'Returns an array of items in the fab inventory. Use the `search` argument to filter them. If no arguments are provided, all items are returned, ordered by name.'
@@ -49,4 +79,4 @@ class Query(graphene.ObjectType):
     def resolve_locations(self, info):
         return list(LocationModel.objects.all().order_by('name'))
 
-schema = graphene.Schema(query=Query)
+schema = graphene.Schema(query=Query, mutation=Mutations)
