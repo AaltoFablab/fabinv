@@ -1,139 +1,99 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <meta charset="UTF-8">
+
+    <meta charset="utf-8">
     <title>Inventory</title>
-    <style>
-      body {
-        background-image: url('images/debug.jpg');
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-        background-position: center;
-        background-size: cover;
-        margin: 0;
-        padding: 0;
-        background: #8168ff;    /* interchangeable color - background */
-      }
-      .header {
-        position: absolute;
-        top: 10%;
-        left: 90px;
-        width: 330px;
-        height: 60px;
-        background-color: white;
-      }
-      #header-text {
-        position: relative;
-        top: -15%;
-        left: 27%;
-        font-family: helvetica;
-        color: #8168ff;
-      }
-      .search-box {
-        position: absolute;
-        top: 70px;
-        width: 330px;
-        background-color: white;  /* interchangeable color - search box */
-        height: 50px;
-        border-radius: 0px;
-        padding: 0px;
-      }
-      .search-text {
-        font-weight: bold;
-        border: none;
-        outline: none;
-        background: none;
-        padding: 0;
-        color: black;             /* interchangeable color - text */
-        font-size: 20px;
-        position: relative;
-        top: 14px;
-        left: 20px
-      }
-      .items {
-        position: absolute;
-        top: 35%;
-        left: 90px;
-        width: 600px;
-        height: 500px;
-        background-color: white;
-      }
-      #names {
-        position: absolute;
-        width: 100%;
-        height: 100%;
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        background-color: none; /* debugging */
-      }
-      #items-table {
-        position: absolute;
-        font-weight: bold;
-        font-family: helvetica;
-        font-size: 13px;
-        color: #969696;
-        padding: 10px;
+    <!-- FONT -->
+    <!-- <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css"> -->
 
-        width: 100%;
-        height: 100%;
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/skeleton.css">
+    <link rel="stylesheet" href="css/style.css">
 
-        background-color: none;
+    <link rel="icon" type="image/png" href="images/icon2.png">
 
-        border-collapse: separate;
-        border-spacing: 0px;
-      }
-      #details {
-        position: absolute;
-        top: 35%;
-        left: 700px;
-
-        height: 500px;
-        width: 600px;
-
-        background-color: white;
-      }
-      td {
-        border: 1px solid #b5b5b5;
-        padding-left: 5px;
-
-        background-color: white;
-      }
-    </style>
   </head>
-
   <body>
-    <div type="text" class="header">
-      <h1 id="header-text">
-        Inventory
-      </h1>
-      <div type="text" class="search-box">
-        <input type="text" name="" class="search-text" placeholder="search for items..."/>
-        <a class="search-button">
+    <div class="container" id="zero">
+      <div id="header">
+        <h1>
+          Inventory
+        </h1>
+      </div>
+    <br />
+    <div id="search-box">
+      <input type="text" name="search" id="search" placeholder="search for items..."/>
+    </div>
+    <br />
+    <br />
+      <div class="row" id="one">
+        <div class="seven columns" id="two">
+          <table class="u-full-width" id="items-table">
+            <p id="titled">
+              Name, Price (€), Location
+            </p>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+        <div class="five columns" id="three">
+          <p id="detailtext">
+            Lorem ipsum dolor sit amet, consectetur adipisicing
+            elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua. Ut enim ad minim veniam, quis
+            nostrud exercitation ullamco laboris nisi ut aliquip
+            ex ea commodo consequat. Duis aute irure dolor in
+            reprehenderit in voluptate velit esse cillum dolore
+            eu fugiat nulla pariatur. Excepteur sint occaecat
+            cupidatat non proident, sunt in culpa qui officia
+            deserunt mollit anim id est laborum.
+          </p>
+        </div>
       </div>
     </div>
-
-    <div id="details">
-
-    </div>
-
-    <div class="items">
-
-      <div id="names">
-
-        <table id="items-table">
-          <tr>
-            <td>Name</td>
-            <td>Price (€)</td>
-            <td>Location</td>
-          </tr>
-        </table>
-
-      </div>
-
-    </div>
-
     <!--- Change pathing --->                             <!--- ! --->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script>
+    function processInput(){
+        console.log('asd');
+    }
+
+    function updateItemTable(data){
+        $('#items-table').empty();
+
+        data.data.items.forEach(function(element){
+            $('#items-table').append('<tr><td>' + element.name + '</td><td>' + element.price + '</td><td>' + element.location.name + '</td></tr>');
+        });
+    }
+
       $(document).ready(function() {
+
+        $('#search').bind('input propertyChange', function(event){
+            if(event.target.value == ''){
+                return;
+            }
+
+            $.ajax({
+                method: 'POST',
+                url: 'http://127.0.0.1:5000/graphql',
+                contentType: 'application/graphql',
+                data: '{items(search:"' +
+                    event.target.value +
+                    '"){name, price, location{name}}}',
+                success: function(data){
+                    updateItemTable(data);
+                },
+                error: function(xhr, status, error){
+                    console.log(status);
+                }
+            });
+        });
 
         $.ajax({
 
@@ -159,6 +119,10 @@
         });
 
       });
+
+      var fieldNameElement = document.getElementById('detailtext');
+      fieldNameElement.innerHTML = "Detail text here";
+
     </script>
   </body>
 </html>

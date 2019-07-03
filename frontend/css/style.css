@@ -1,0 +1,78 @@
+body {
+  background-color: black;
+}
+h4 {
+  font-size: 50px;
+  font-family: monospace;
+}
+th, td {
+  padding: 6px 8px;
+}
+h1 {
+  color: white;
+  font-family: courier;
+  margin-top: 50px;
+}
+#titled {
+  border-bottom: 1px white solid;
+  padding-bottom: 5px;
+}
+input[type="search"],
+input[type="text"] {
+  background-color: black;
+  border-radius: 0px;
+  border: 1px white solid;
+  box-sizing: none;
+  height: 30px;
+  float: left;
+}
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="text"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+  border: 1px solid blue;
+  outline: 0;
+}
+#search-box {
+  padding-left: 0px;
+  margin-left: 0px;
+}
+#search {
+  color: white;
+}
+#zero {
+
+}
+#one {
+  background-color: none;
+}
+#two {
+  background-color: black;
+  color: white;
+  padding: 10px;
+  padding-bottom: 0px;
+  border: 2px white solid;
+
+  font-family: courier;
+}
+#three {
+  background-color: black;
+  color: white;
+  padding: 10px;
+  padding-bottom: 0px;
+  border: 2px white solid;
+
+  font-family: courier;
+}
+#items-table {
+
+}
+::placeholder {
+  color: white;
+  font-family: courier;
+}
