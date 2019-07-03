@@ -1,3 +1,107 @@
-#!/bin/bash
-curl -sd '{items{name,price,location{name}}}' -H 'Content-Type: application/graphql' 127.0.0.1:5000/graphql | jq -r '.data.items[] | "\(.name), \(.price)€, \(.location.name)"' | grep --color -s -i $""$@
+#!/bin/sh
 
+print_usage=false
+use_color=false
+print_all=false
+
+search=""
+
+usage() {
+    echo \
+"Usage: fabinv [options] query
+Options:
+  -a,\t--all\tPrint all items
+  -c,\t--color\tColorize the results
+  -h,\t--help\tDisplay this information"
+}
+
+add_word() {
+    #printf "adding word \"%s\", length %d\n" "$1" "$(expr length $1)"
+    if [ $(expr length "$search") -eq 0 ]
+    then
+        #echo "first word"
+        search="$1"
+    else
+        #echo "not first word"
+        search=$(printf "%s %s" "$search" "$1")
+    fi
+    #printf "query is now: \"%s\"\n" "$search"
+}
+
+if [ $# -eq 0 ]
+then
+    usage
+    exit
+fi
+
+while [ $# -gt 0 ]
+do
+    #echo "$#"
+    key="$1"
+    #echo "$key"
+
+    case $key in
+        -a|--all)
+        print_all=true
+        ;;
+        -c|--color)
+        use_color=true
+        ;;
+        -h|--help)
+        #echo "help argument"
+        print_usage=true
+        ;;
+        *)
+        is_dash=$(echo "$key" | cut -c1-2)
+        case $is_dash in
+            -)
+            echo "Unknown argument $key"
+            ;;
+            *)
+            add_word $key
+            ;;
+        esac
+        ;;
+    esac
+    shift
+done
+
+if [ $(expr length "$search") -eq 0 ]
+then
+    print_usage=true
+fi
+
+if [ "$print_usage" = "true" ]
+then
+    usage
+    exit
+fi
+#echo "$search"
+#printf "query: %s\n" "$search"
+#printf "querya: %s\n" $@
+#q="$(printf "%s" "$search")"
+search="$(echo "$search")"
+
+query=""
+if [ "$print_all" = "true" ]
+then
+    query="{items{name,price,location{name}}}"
+else
+    query="{items(search:\"$search\"){name,price,location{name}}}"
+fi
+
+price_color='\033[1;32m'
+location_color='\033[1;33m'
+jq_filter='.data.items[] | "\(.name),\(.price)€,\(.location.name)"'
+
+result=$(curl -sd "$query" -H 'Content-Type: application/graphql' 127.0.0.1:5000/graphql | jq -r "$jq_filter")
+# | grep --color -s -i "$search"
+#echo "$result"
+grep_pattern="$(echo "$search" | tr ' ' '|')"
+#echo "$grep_pattern"
+if [ "$use_color" = "true" ]
+then
+    echo "$result" | awk -F',' "{printf \"\033[0m%s,$price_color%s,$location_color%s\n\", \$1, \$2, \$3}" | column -t -s , | grep -E --color -s -i "$grep_pattern"
+else
+    echo "$result" | column -t -s ,
+fi
