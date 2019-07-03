@@ -3,6 +3,7 @@ from graphene_mongo import MongoengineConnectionField, MongoengineObjectType
 from models import Location as LocationModel
 from models import Item as ItemModel
 from graphql import GraphQLError
+from datetime import datetime
 
 class Item(MongoengineObjectType):
     class Meta: 
@@ -68,6 +69,36 @@ class RemoveLocation(graphene.Mutation):
         ok = True
         return RemoveLocation(ok=ok)
 
+class UpdateLocation(graphene.Mutation):
+    '''
+    Updates location in the database. Location `id` is required. 
+    Everything else is optional and will not be changed if not specified.
+    '''
+
+    class Arguments:
+        id = graphene.String(required=True)
+        name = graphene.String()
+
+    ok = graphene.Boolean()
+    location = graphene.Field(lambda: Location)
+
+    def mutate(self, info, id, name=None):
+        if id is '':
+            raise GraphQLError('Location ID must not be empty')
+
+        location = LocationModel.objects(id=id).first()
+        if location is None:
+            raise GraphQLError('Location not found')
+
+        if name is not None:
+            if name != location.name:
+                location.name = name
+                location.modified = datetime.now
+                location.save()
+
+        ok = True
+        return UpdateLocation(ok=ok, location=location)
+
 class AddItem(graphene.Mutation):
     '''
     Adds new item to database. 
@@ -125,11 +156,59 @@ class RemoveItem(graphene.Mutation):
         ok = True
         return RemoveItem(ok=ok)
 
+class UpdateItem(graphene.Mutation):
+    '''
+    Updates an item in the database. Item `id` is required. 
+    Everything else is optional. Yes, you can specify `name`,
+    `price` and `locationId` separately. What is not specified,
+    will not be changed.
+    '''
+
+    class Arguments:
+        id = graphene.String(required=True)
+        name = graphene.String()
+        price = graphene.Float()
+        locationId = graphene.String()
+
+    ok = graphene.Boolean()
+    item = graphene.Field(lambda: Item)
+
+    def mutate(self, info, id, name=None, price=None, locationId=None):
+        item = ItemModel.objects(id=id).first()
+
+        ok = True
+        if item is None:
+            raise GraphQLError('Item does not exist')
+
+        if name is not None:
+            if name != item.name:
+                item.name = name
+                item.modified = datetime.now
+
+        if price is not None:
+            if price != item.price:
+                item.price = price
+                item.modified = datetime.now
+
+        if locationId is not None:
+            location = LocationModel.objects(id=locationId).first()
+            if location is None:
+                raise GraphQLError('Could not find location')
+            if location.id != item.location.id:
+                item.location = location
+                item.modified = datetime.now
+
+        item.save()
+
+        return UpdateItem(ok=ok, item=item)
+
 class Mutations(graphene.ObjectType):
     add_item = AddItem.Field()
     remove_item = RemoveItem.Field()
+    update_item = UpdateItem.Field()
     add_location = AddLocation.Field()
     remove_location = RemoveLocation.Field()
+    update_location = UpdateLocation.Field()
 
 class Query(graphene.ObjectType):
     items_description = 'Returns an array of items in the fab inventory. Use the `search` argument to filter them. If no arguments are provided, all items are returned, ordered by name.'
