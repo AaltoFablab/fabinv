@@ -13,7 +13,7 @@ Ever not been able to find stuff and to get started at a place like a Fab Lab? T
 - [x] Backend: Add mutation to add new items and locations.
 - [x] Backend: Add mutation to del items and locations.
 - [ ] Backend: Add mutation to mod items and locations.
-- [ ] Backend: Add authentication mutations. [Password solution A](https://stackoverflow.com/questions/27943258/save-password-as-salted-hash-in-mongodb-in-users-collection-using-python-bcrypt), Password solution N.
+- [ ] Backend: Add authentication mutations. [Password solution A](https://stackoverflow.com/questions/27943258/save-password-as-salted-hash-in-mongodb-in-users-collection-using-python-bcrypt), [Password solution B](https://pypi.org/project/passlib/).
 
 - [ ] Frontend: Create a fake search where on each input field change, GraphQL endpoint is called. Using [GraphQL.js](https://github.com/f/graphql.js) and [jQuery](https://jquery.com/).
 - [ ] Frontend: Integrate simple search feature from backend. 
