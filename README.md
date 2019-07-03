@@ -11,7 +11,7 @@ Ever not been able to find stuff and to get started at a place like a Fab Lab? T
 - [x] Backend: Add real MongoDB database with instructions how to set up locally.
 - [x] Backend: Add search across multiple fields and collections.
 - [x] Backend: Add mutation to add new items and locations.
-- [ ] Backend: Add mutation to del items and locations.
+- [x] Backend: Add mutation to del items and locations.
 - [ ] Backend: Add mutation to mod items and locations.
 
 - [ ] Frontend: Create a fake search where on each input field change, GraphQL endpoint is called. Using [GraphQL.js](https://github.com/f/graphql.js) and [jQuery](https://jquery.com/).
