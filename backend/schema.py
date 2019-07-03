@@ -68,6 +68,34 @@ class RemoveLocation(graphene.Mutation):
         ok = True
         return RemoveLocation(ok=ok)
 
+class UpdateLocation(graphene.Mutation):
+    '''
+    Updates location in the database. Location `id` is required. 
+    Everything else is optional and will not be changed if not specified.
+    '''
+
+    class Arguments:
+        id = graphene.String(required=True)
+        name = graphene.String()
+
+    ok = graphene.Boolean()
+    location = graphene.Field(lambda: Location)
+
+    def mutate(self, info, id, name=None):
+        if id is '':
+            raise GraphQLError('Location ID must not be empty')
+
+        location = LocationModel.objects(id=id).first()
+        if location is None:
+            raise GraphQLError('Location not found')
+
+        if name is not None:
+            location.name = name
+            location.save()
+
+        ok = True
+        return UpdateLocation(ok=ok, location=location)
+
 class AddItem(graphene.Mutation):
     '''
     Adds new item to database. 
@@ -171,6 +199,7 @@ class Mutations(graphene.ObjectType):
     update_item = UpdateItem.Field()
     add_location = AddLocation.Field()
     remove_location = RemoveLocation.Field()
+    update_location = UpdateLocation.Field()
 
 class Query(graphene.ObjectType):
     items_description = 'Returns an array of items in the fab inventory. Use the `search` argument to filter them. If no arguments are provided, all items are returned, ordered by name.'
