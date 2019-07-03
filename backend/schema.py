@@ -3,6 +3,7 @@ from graphene_mongo import MongoengineConnectionField, MongoengineObjectType
 from models import Location as LocationModel
 from models import Item as ItemModel
 from graphql import GraphQLError
+from datetime import datetime
 
 class Item(MongoengineObjectType):
     class Meta: 
@@ -90,8 +91,10 @@ class UpdateLocation(graphene.Mutation):
             raise GraphQLError('Location not found')
 
         if name is not None:
-            location.name = name
-            location.save()
+            if name != location.name:
+                location.name = name
+                location.modified = datetime.now
+                location.save()
 
         ok = True
         return UpdateLocation(ok=ok, location=location)
@@ -178,16 +181,22 @@ class UpdateItem(graphene.Mutation):
             raise GraphQLError('Item does not exist')
 
         if name is not None:
-            item.name = name
+            if name != item.name:
+                item.name = name
+                item.modified = datetime.now
 
         if price is not None:
-            item.price = price
+            if price != item.price:
+                item.price = price
+                item.modified = datetime.now
 
         if locationId is not None:
             location = LocationModel.objects(id=locationId).first()
             if location is None:
                 raise GraphQLError('Could not find location')
-            item.location = location
+            if location.id != item.location.id:
+                item.location = location
+                item.modified = datetime.now
 
         item.save()
 
