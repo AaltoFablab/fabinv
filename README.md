@@ -138,7 +138,7 @@ Mutations let you change the underlying database. Two basic ones are `addItem` a
 
 **Adding Locations**
 ```
-mutation locationAdd {
+mutation {
   addLocation(name: "3D Printing Room") {
     location {
       name
@@ -149,7 +149,7 @@ mutation locationAdd {
 
 **Adding Items**
 ```
-mutation itemAdd {
+mutation {
   addItem(name: "Nails M2 30mm", price: 0.0, locationId: "5d1b0dcf036b2986fb8ccad7") {
     item {
       name,
