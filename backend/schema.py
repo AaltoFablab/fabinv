@@ -125,9 +125,50 @@ class RemoveItem(graphene.Mutation):
         ok = True
         return RemoveItem(ok=ok)
 
+class UpdateItem(graphene.Mutation):
+    '''
+    Updates an item in the database. Item `id` is required. 
+    Everything else is optional. Yes, you can specify `name`,
+    `price` and `locationId` separately. What is not specified,
+    will not be changed.
+    '''
+
+    class Arguments:
+        id = graphene.String(required=True)
+        name = graphene.String()
+        price = graphene.Float()
+        locationId = graphene.String()
+
+    ok = graphene.Boolean()
+    item = graphene.Field(lambda: Item)
+
+    def mutate(self, info, id, name=None, price=None, locationId=None):
+        item = ItemModel.objects(id=id).first()
+
+        ok = True
+        if item is None:
+            raise GraphQLError('Item does not exist')
+
+        if name is not None:
+            item.name = name
+
+        if price is not None:
+            item.price = price
+
+        if locationId is not None:
+            location = LocationModel.objects(id=locationId).first()
+            if location is None:
+                raise GraphQLError('Could not find location')
+            item.location = location
+
+        item.save()
+
+        return UpdateItem(ok=ok, item=item)
+
 class Mutations(graphene.ObjectType):
     add_item = AddItem.Field()
     remove_item = RemoveItem.Field()
+    update_item = UpdateItem.Field()
     add_location = AddLocation.Field()
     remove_location = RemoveLocation.Field()
 
