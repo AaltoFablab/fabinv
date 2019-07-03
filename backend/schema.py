@@ -40,6 +40,34 @@ class AddLocation(graphene.Mutation):
         ok = True
         return AddLocation(location=location, ok=ok)
 
+class RemoveLocation(graphene.Mutation):
+    '''
+    Removes location with specified ID. 
+    Throws error if items referencing location ID exist.
+    Delete items or change their location before removing the location.
+    '''
+
+    class Arguments:
+        id = graphene.String(required=True)
+
+    ok = graphene.Boolean()
+
+    def mutate(self, info, id):
+        if id == '':
+            raise GraphQLError('Location ID must not be empty')
+
+        # Check if we can find items with this location
+        for item in ItemModel.objects:
+            if str(item.location.id) == str(id):
+                raise GraphQLError('Please delete items at the location first or change their location')
+        
+        # Try to delete
+        if not LocationModel.objects(id=id).delete():
+            raise GraphQLError('Location does not exist')
+        
+        ok = True
+        return RemoveLocation(ok=ok)
+
 class AddItem(graphene.Mutation):
     '''
     Adds new item to database. 
@@ -76,9 +104,32 @@ class AddItem(graphene.Mutation):
         ok = True
         return AddItem(item=item, ok=ok)
 
+class RemoveItem(graphene.Mutation):
+    '''
+    Removes an item with ID from database.
+    '''
+
+    class Arguments:
+        id = graphene.String(required=True)
+
+    ok = graphene.Boolean()
+
+    def mutate(self, info, id):
+        if id == '':
+            raise GraphQLError('Item ID must not be empty')
+        
+        # Try to delete
+        if not ItemModel.objects(id=id).delete():
+            raise GraphQLError('Item does not exist')
+
+        ok = True
+        return RemoveItem(ok=ok)
+
 class Mutations(graphene.ObjectType):
     add_item = AddItem.Field()
+    remove_item = RemoveItem.Field()
     add_location = AddLocation.Field()
+    remove_location = RemoveLocation.Field()
 
 class Query(graphene.ObjectType):
     items_description = 'Returns an array of items in the fab inventory. Use the `search` argument to filter them. If no arguments are provided, all items are returned, ordered by name.'
