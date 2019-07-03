@@ -104,8 +104,30 @@ class AddItem(graphene.Mutation):
         ok = True
         return AddItem(item=item, ok=ok)
 
+class RemoveItem(graphene.Mutation):
+    '''
+    Removes an item with ID from database.
+    '''
+
+    class Arguments:
+        id = graphene.String(required=True)
+
+    ok = graphene.Boolean()
+
+    def mutate(self, info, id):
+        if id == '':
+            raise GraphQLError('Item ID must not be empty')
+        
+        # Try to delete
+        if not ItemModel.objects(id=id).delete():
+            raise GraphQLError('Item does not exist')
+
+        ok = True
+        return RemoveItem(ok=ok)
+
 class Mutations(graphene.ObjectType):
     add_item = AddItem.Field()
+    remove_item = RemoveItem.Field()
     add_location = AddLocation.Field()
     remove_location = RemoveLocation.Field()
 
