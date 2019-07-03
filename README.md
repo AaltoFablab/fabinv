@@ -13,9 +13,14 @@ Ever not been able to find stuff and to get started at a place like a Fab Lab? T
 - [x] Backend: Add mutation to add new items and locations.
 - [ ] Backend: Add mutation to del items and locations.
 - [ ] Backend: Add mutation to mod items and locations.
+
 - [ ] Frontend: Create a fake search where on each input field change, GraphQL endpoint is called. Using [GraphQL.js](https://github.com/f/graphql.js) and [jQuery](https://jquery.com/).
 - [ ] Frontend: Integrate simple search feature from backend. 
 - [ ] Frontend: Port the solution to [RiotJS](https://riot.js.org/).
+
+- [ ] CLI: `fabinv show locations` (returns locations with names and ids)
+- [ ] CLI: `fabinv add item "Pepsi Max", 1.55, "location id"` (return item data)
+- [ ] CLI: `fabinv add location "Fridge"` (return location name and id)
 
 ## Setting up MongoDB Instance
 
@@ -133,7 +138,7 @@ Mutations let you change the underlying database. Two basic ones are `addItem` a
 
 **Adding Locations**
 ```
-mutation locationAdd {
+mutation {
   addLocation(name: "3D Printing Room") {
     location {
       name
@@ -144,7 +149,7 @@ mutation locationAdd {
 
 **Adding Items**
 ```
-mutation itemAdd {
+mutation {
   addItem(name: "Nails M2 30mm", price: 0.0, locationId: "5d1b0dcf036b2986fb8ccad7") {
     item {
       name,
