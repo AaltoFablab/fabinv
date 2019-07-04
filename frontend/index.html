@@ -9,9 +9,6 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- FONT -->
-    <!-- <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css"> -->
-
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/skeleton.css">
     <link rel="stylesheet" href="css/style.css">
@@ -22,14 +19,18 @@
   <body>
     <div class="container" id="zero">
       <div id="header">
-        <h1>
-          Inventory
-        </h1>
+        <h3 class="u-full-width" id="headerone" style="color:blue;">
+          //Inventory//
+        </h3>
       </div>
     <br />
-    <div id="search-box">
-      <input type="text" name="search" id="search" placeholder="search for items..."/>
+    <div class="five columns" id="search-box">
+      <input type="text" name="search" autocomplete="off" id="search" placeholder="Search For Items..."/>
     </div>
+    <div class="seven columns" id="color-box">
+      ││││││││││││ ││││││││││││
+    </div>
+    <br />
     <br />
     <br />
       <div class="row" id="one">
@@ -43,50 +44,54 @@
           </table>
         </div>
         <div class="five columns" id="three">
-          <p id="detailtext">
-            Lorem ipsum dolor sit amet, consectetur adipisicing
-            elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis
-            nostrud exercitation ullamco laboris nisi ut aliquip
-            ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore
-            eu fugiat nulla pariatur. Excepteur sint occaecat
-            cupidatat non proident, sunt in culpa qui officia
-            deserunt mollit anim id est laborum.
-          </p>
+          <div>
+            <h3 id="headertwo" style="color:red">
+              //Details//
+            </h3>
+            <p id="detailtext">
+              Click on items for details.
+            </p>
+            <button style="float:right">edit</button>
+          </div>
         </div>
       </div>
     </div>
-    <!--- Change pathing --->                             <!--- ! --->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <!--- Change pathing --->                             <!-------->
+    <script src="libraries/jquery-3.4.1.min.js"></script>
     <script>
-    function processInput(){
-        console.log('asd');
-    }
 
-    function updateItemTable(data){
-        $('#items-table').empty();
-
-        data.data.items.forEach(function(element){
-            $('#items-table').append('<tr><td>' + element.name + '</td><td>' + element.price + '</td><td>' + element.location.name + '</td></tr>');
-        });
-    }
 
       $(document).ready(function() {
+        
+        function processInput(){
+            console.log('onetwothree');
+        }
+        function updateItemTable(data){   //\\//\\UPDATE//\\ITEM//\\TABLE//\\//\\
+
+            $('#items-table').empty();
+            data.data.items.forEach(function(element){
+
+                $('#items-table').append('<tr>' +
+                '<td class="itemName">' + element.name + '</td>' +
+                '<td class="itemPrice">' + element.price + '</td>' +
+                '<td class="itemLocationName">' + element.location.name + '</td></tr>');
+            });
+        }
 
         $('#search').bind('input propertyChange', function(event){
+
             if(event.target.value == ''){
                 return;
             }
-
             $.ajax({
+
                 method: 'POST',
                 url: 'http://127.0.0.1:5000/graphql',
                 contentType: 'application/graphql',
                 data: '{items(search:"' +
                     event.target.value +
                     '"){name, price, location{name}}}',
-                success: function(data){
+                  success: function(data){
                     updateItemTable(data);
                 },
                 error: function(xhr, status, error){
@@ -94,7 +99,6 @@
                 }
             });
         });
-
         $.ajax({
 
           type: 'POST',
@@ -110,19 +114,31 @@
 
               console.log(items[i]);
 
-              $("#items-table").append("<tr><td>"+items[i].name+"</td><td>"+items[i].price+"</td><td>"+items[i].location.name+"</td></tr>");
+              $("#items-table").append(
 
+                  '<tr data-id="' + items[i].id + '">' +
+                  '<td class="itemName">' + items[i].name + '</td>' +
+                  '<td class="itemPrice">' + items[i].price + '</td>' +
+                  '<td class="itemLocationName">' + items[i].location.name + '</td>' +
+                  '</tr>');
+
+              $('#items-table tr').last().click(function(){
+
+                var itemName = $(this).find('.itemName').first().text();
+                var itemPrice = $(this).find('.itemPrice').first().text();
+                var itemLocationName = $(this).find('.itemLocationName').first().text();
+                console.log( itemName, itemPrice, itemLocationName );
+
+                $('#detailtext').html(
+
+                  'Item Name: ' + itemName + '<br><br>' +
+                  'Item Price: ' + itemPrice + '<br><br>' +
+                  'Item Location: ' + itemLocationName );
+              });
             }
-
           }
-
         });
-
       });
-
-      var fieldNameElement = document.getElementById('detailtext');
-      fieldNameElement.innerHTML = "Detail text here";
-
     </script>
   </body>
 </html>
