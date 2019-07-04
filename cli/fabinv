@@ -4,15 +4,29 @@ print_usage=false
 use_color=false
 print_all=false
 
+do_search=true
+do_mutate=false
+do_add_item=false
+do_add_location=false
+
+item_name=""
+item_price=""
+item_location=""
+location_name=""
+
 search=""
 
 usage() {
     echo \
 "Usage: fabinv [options] query
 Options:
+  --additem <name> <price> <location_id>
+  \t\tAdd a new item
   -a,\t--all\tPrint all items
   -c,\t--color\tColorize the results
-  -h,\t--help\tDisplay this information"
+  -h,\t--help\tDisplay this information
+  \t--list\tList all locations
+  "
 }
 
 add_word() {
@@ -28,6 +42,48 @@ add_word() {
     #printf "query is now: \"%s\"\n" "$search"
 }
 
+# Lists all locations and their IDs
+list_locations() {
+    query="{locations{name,id}}"
+    jq_filter='.data.locations[] | "\(.name),\(.id)"'
+    result=$(curl -sd "$query" -H 'Content-Type: application/graphql' 127.0.0.1:5000/graphql | jq -r "$jq_filter")
+    echo "$result" | column -t -s ,
+}
+
+# Add a new location to the database
+add_location() {
+    query="mutation{addLocation(name:\"$location_name\"){ok,location{name,id}}}"
+    result=$(curl -sd "$query" -H 'Content-Type: application/graphql' 127.0.0.1:5000/graphql)
+    error=$(echo "$result" | jq -r 'select(.errors != null) | .errors | .[0].message')
+    if [ $(expr length "$error") -gt 0 ]
+    then
+        echo "GraphQL error: $error"
+        exit
+    fi
+    jq_filter='.data.addLocation.location | "\(.name),\(.id)"'
+    echo "$result" | jq -r "$jq_filter" | column -t -s ,
+}
+
+# Add a new item to the database
+add_item() {
+    query="\
+mutation{\
+addItem(locationId:\"$item_location\", name:\"$item_name\", price:$item_price){\
+ok,item{name,price,location{name}}\
+}\
+}"
+    result=$(curl -sd "$query" -H 'Content-Type: application/graphql' 127.0.0.1:5000/graphql)
+    #echo "$result" | jq
+    error=$(echo "$result" | jq -r 'select(.errors != null) | .errors | .[0].message')
+    if [ $(expr length "$error") -gt 0 ]
+    then
+        echo "GraphQL error: $error"
+        exit
+    fi
+    jq_filter='.data.addItem.item | "\(.name),\(.price)€,\(.location.name)"'
+    echo "$result" | jq -r "$jq_filter" | column -t -s ,
+}
+
 if [ $# -eq 0 ]
 then
     usage
@@ -41,6 +97,31 @@ do
     #echo "$key"
 
     case $key in
+        --additem)
+        do_search=false
+        if [ $# -gt 3 ]
+        then
+            #echo "$2 $3 $4"
+            do_add_item=true
+            item_name="$2"
+            item_price="$3"
+            item_location="$4"
+        else
+            usage
+            exit
+        fi
+        ;;
+        --addlocation)
+        do_search=false
+        if [ $# -gt 1 ]
+        then
+            do_add_location=true
+            location_name="$2"
+        else
+            usage
+            exit
+        fi
+        ;;
         -a|--all)
         print_all=true
         ;;
@@ -50,6 +131,10 @@ do
         -h|--help)
         #echo "help argument"
         print_usage=true
+        ;;
+        --list)
+        list_locations
+        exit
         ;;
         *)
         is_dash=$(echo "$key" | cut -c1-2)
@@ -66,7 +151,24 @@ do
     shift
 done
 
-if [ $(expr length "$search") -eq 0 ]
+if [ "$do_add_item" = "true" ]
+then
+    add_item
+    exit
+fi
+
+if [ "$do_add_location" = "true" ]
+then
+    add_location
+    exit
+fi
+
+if [ "$do_search" = "false" ]
+then
+    exit
+fi
+
+if [ \( $(expr length "$search") -eq 0 \) -a \( "$print_all" = "false" \) ]
 then
     print_usage=true
 fi
@@ -76,10 +178,6 @@ then
     usage
     exit
 fi
-#echo "$search"
-#printf "query: %s\n" "$search"
-#printf "querya: %s\n" $@
-#q="$(printf "%s" "$search")"
 search="$(echo "$search")"
 
 query=""
@@ -95,10 +193,7 @@ location_color='\033[1;33m'
 jq_filter='.data.items[] | "\(.name),\(.price)€,\(.location.name)"'
 
 result=$(curl -sd "$query" -H 'Content-Type: application/graphql' 127.0.0.1:5000/graphql | jq -r "$jq_filter")
-# | grep --color -s -i "$search"
-#echo "$result"
 grep_pattern="$(echo "$search" | tr ' ' '|')"
-#echo "$grep_pattern"
 if [ "$use_color" = "true" ]
 then
     echo "$result" | awk -F',' "{printf \"\033[0m%s,$price_color%s,$location_color%s\n\", \$1, \$2, \$3}" | column -t -s , | grep -E --color -s -i "$grep_pattern"
