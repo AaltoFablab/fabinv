@@ -131,7 +131,7 @@ class AddItem(graphene.Mutation):
         # Location found, proceed with details
         itemToStore = ItemModel(name=name, price=price, location=locationFound)
         itemToStore.save()
-        item = Item(name=name, price=price, location=locationFound)
+        item = Item(id=itemToStore.id, name=name, price=price, location=locationFound)
         ok = True
         return AddItem(item=item, ok=ok)
 
