@@ -37,7 +37,7 @@ class AddLocation(graphene.Mutation):
 
         locationToStore = LocationModel(name=name)
         locationToStore.save()
-        location = Location(name=name)
+        location = Location(name=name, id=locationToStore.id)
         ok = True
         return AddLocation(location=location, ok=ok)
 
