@@ -28,7 +28,7 @@
       <input type="text" name="search" autocomplete="off" id="search" placeholder="Search For Items..."/>
     </div>
     <div class="seven columns" id="color-box">
-      ││││││││││││ ││││││││││││
+      ││││││││││ ││││││││││
     </div>
     <br />
     <br />
@@ -60,83 +60,70 @@
     <script src="libraries/jquery-3.4.1.min.js"></script>
     <script>
 
+      function processInput(){
+          console.log('onetwothree');
+      }
 
-      $(document).ready(function() {
-        
-        function processInput(){
-            console.log('onetwothree');
-        }
-        function updateItemTable(data){   //\\//\\UPDATE//\\ITEM//\\TABLE//\\//\\
+      function updateItemTable(data){   //\\//\\UPDATE//\\ITEM//\\TABLE//\\//\\
 
-            $('#items-table').empty();
-            data.data.items.forEach(function(element){
+          $('#items-table').empty();
+          data.data.items.forEach(function(element){
 
-                $('#items-table').append('<tr>' +
-                '<td class="itemName">' + element.name + '</td>' +
-                '<td class="itemPrice">' + element.price + '</td>' +
-                '<td class="itemLocationName">' + element.location.name + '</td></tr>');
+              $('#items-table').append('<tr>' +
+              '<td class="itemName">' + element.name + '</td>' +
+              '<td class="itemPrice">' + element.price + '</td>' +
+              '<td class="itemLocationName">' + element.location.name + '</td></tr>');
+          });
+      }
+      function search(term) {
+      $.ajax({
+
+        type: 'POST',
+        url:"/graphql",
+        contentType: "application/graphql",
+        data: '{items(search:"' + term + '"){name,price,location{name}}}',
+
+        success: function(result) {
+
+          $("#items-table").empty();
+
+          console.log(result);
+          let items = result.data.items;
+          for(var i = 0; i < items.length; i++) {
+
+            console.log(items[i]);
+
+            $("#items-table").append(   //\\//\\SET//\\ITEM//\\TABLE//\\//\\
+
+                '<tr data-id="' + items[i].id + '">' +
+                '<td class="itemName">' + items[i].name + '</td>' +
+                '<td class="itemPrice">' + items[i].price + '</td>' +
+                '<td class="itemLocationName">' + items[i].location.name + '</td>' +
+                '</tr>');
+
+            $('#items-table tr').last().click(function(){
+
+              var itemName = $(this).find('.itemName').first().text();
+              var itemPrice = $(this).find('.itemPrice').first().text();
+              var itemLocationName = $(this).find('.itemLocationName').first().text();
+              console.log( itemName, itemPrice, itemLocationName );
+
+              $('#detailtext').html(
+
+                'Item Name: ' + itemName + '<br><br>' +
+                'Item Price: ' + itemPrice + '<br><br>' +
+                'Item Location: ' + itemLocationName );
             });
+          }
         }
+      });
+    }
+      $(document).ready (function() {
+        search('');
 
         $('#search').bind('input propertyChange', function(event){
-
-            if(event.target.value == ''){
-                return;
-            }
-            $.ajax({
-
-                method: 'POST',
-                url: 'http://127.0.0.1:5000/graphql',
-                contentType: 'application/graphql',
-                data: '{items(search:"' +
-                    event.target.value +
-                    '"){name, price, location{name}}}',
-                  success: function(data){
-                    updateItemTable(data);
-                },
-                error: function(xhr, status, error){
-                    console.log(status);
-                }
-            });
-        });
-        $.ajax({
-
-          type: 'POST',
-          url:"/graphql",
-          contentType: "application/graphql",
-          data: "{items{name,price,location{name}}}",
-
-          success: function(result) {
-
-            console.log(result);
-            let items = result.data.items;
-            for(var i = 0; i < items.length; i++) {
-
-              console.log(items[i]);
-
-              $("#items-table").append(
-
-                  '<tr data-id="' + items[i].id + '">' +
-                  '<td class="itemName">' + items[i].name + '</td>' +
-                  '<td class="itemPrice">' + items[i].price + '</td>' +
-                  '<td class="itemLocationName">' + items[i].location.name + '</td>' +
-                  '</tr>');
-
-              $('#items-table tr').last().click(function(){
-
-                var itemName = $(this).find('.itemName').first().text();
-                var itemPrice = $(this).find('.itemPrice').first().text();
-                var itemLocationName = $(this).find('.itemLocationName').first().text();
-                console.log( itemName, itemPrice, itemLocationName );
-
-                $('#detailtext').html(
-
-                  'Item Name: ' + itemName + '<br><br>' +
-                  'Item Price: ' + itemPrice + '<br><br>' +
-                  'Item Location: ' + itemLocationName );
-              });
-            }
-          }
+          console.log(event.target.value);
+          search(event.target.value);
         });
       });
     </script>
