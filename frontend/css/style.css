@@ -65,6 +65,9 @@ select:focus {
   font-size: 20px;
   text-align: center;
 }
+#color-box:hover {
+  color: #c21ad9;
+}
 #zero {
 
 }
