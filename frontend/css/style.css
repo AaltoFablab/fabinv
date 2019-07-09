@@ -16,7 +16,7 @@ tr:active {
 }
 h3 {
   color: red;
-  font-family: helvetica;
+  font-family: courier;
 }
 #titled {
   border-bottom: 1px white solid;
@@ -31,6 +31,7 @@ input[type="text"] {
   box-sizing: none;
   height: 30px;
   float: left;
+  font-family: courier;
 }
 input[type="email"]:focus,
 input[type="number"]:focus,
@@ -57,17 +58,15 @@ select:focus {
   width: 100%;
   height: 100%;
 }
-#color-box {
+#tool-pane {
   height: 40px;
   border: 2px white solid;
   background-color: black;
   color: green;
   font-size: 20px;
-  text-align: center;
+  text-align: left center;
 }
-#color-box:hover {
-  color: #c21ad9;
-}
+
 #zero {
 
 }
@@ -115,14 +114,10 @@ select:focus {
   color: white;
   font-family: courier;
 }
-table:hover {
+table:hover, li:hover {
   cursor: pointer;
 }
 button {
-  border-color: white;
-  color: blue;
-}
-button:focus {
   border-color: white;
   color: blue;
 }
@@ -132,4 +127,19 @@ button:hover {
 }
 button:active {
   border-color: blue;
+}
+ul {
+  list-style-type: none;
+}
+li {
+  float: left;
+  display: block;
+  padding-left: 10px;
+  font-family: courier;
+}
+.btn-add:hover, .BUTTONONE:hover, li:hover {
+  color: #c21ad9;
+}
+.btn-add:active, .BUTTONONE:active, li:active {
+  color: yellow;
 }

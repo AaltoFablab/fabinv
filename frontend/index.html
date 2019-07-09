@@ -27,8 +27,12 @@
       <div class="five columns" id="search-box">
         <input type="text" name="search" autocomplete="off" id="search" placeholder="Search For Items..."/>
       </div>
-      <div class="seven columns" id="color-box">
-
+      <div class="seven columns" id="tool-pane">
+        <ul>
+          <li class="btn-add">[dbg item]</li>
+          <li>[button]</li>
+          <li>[button]</li>
+        </ul>
       </div>
       <br />
       <br />
@@ -51,7 +55,7 @@
             <p id="detailtext">
               Click on items for details.
             </p>
-            <button class="btn-delete" style="float:right">Delete</button>
+            <button class="btn-delete" style="float:right">Delete entry</button>
           </div>
         </div>
       </div>
@@ -76,8 +80,28 @@
           }
         });
       }
+      function addItem() {
+        var x = Math.floor((Math.random() * 89) + 10);
+        var y = Math.floor((Math.random() * 89) + 10);
+        var z = Math.floor((Math.random() * 89) + 10);
 
-        function search(term) {
+        $.ajax({
+          type: 'POST',
+          url:"/graphql",
+          contentType: "application/graphql",
+          data: 'mutation{addItem(locationId:"5d1c7a5c21208eb5d689d274", name:"' + "dbgitem " + x +" "+ y +" "+ z + '", price:1){item{name}}}',
+
+          success:function(data){
+            console.log(data);
+          },
+
+          error:function(data){
+            console.log(data);
+          }
+        });
+      }
+
+      function search(term) {
         $.ajax({
 
           type: 'POST',
@@ -124,7 +148,6 @@
                   console.log(itemName, itemPrice, itemLocationName);
                   deleteItem(itemID);
                 });
-
               });
             }
           }
@@ -133,11 +156,17 @@
       $(document).ready (function() {
         search('');
 
+        $('#tool-pane .btn-add').click(function() {
+          addItem();
+          console.log('debug item added');
+        });
+
         $('#search').bind('input propertyChange', function(event){
           console.log(event.target.value);
           search(event.target.value);
         });
       });
+
     </script>
   </body>
 </html>
