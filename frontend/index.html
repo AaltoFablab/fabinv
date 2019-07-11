@@ -19,8 +19,8 @@
   <body>
     <div class="container" id="zero">
       <div id="header">
-        <h3 class="u-full-width" id="headerone" style="color:blue;">
-          //Inventory//
+        <h3 class="u-full-width" id="headerone" style="color:#1c20ff;">
+          Inventory
         </h3>
       </div>
       <br />
@@ -29,9 +29,8 @@
       </div>
       <div class="seven columns" id="tool-pane">
         <ul>
-          <li class="btn-add">[dbg item]</li>
-          <li>[button]</li>
-          <li>[button]</li>
+          <li class="btn-add">[new entry]</li>
+          <li class="btn-add-dbg">[dbg entry]</li>
         </ul>
       </div>
       <br />
@@ -80,7 +79,7 @@
           }
         });
       }
-      function addItem() {
+      function addDebug() {
         var x = Math.floor((Math.random() * 89) + 10);
         var y = Math.floor((Math.random() * 89) + 10);
         var z = Math.floor((Math.random() * 89) + 10);
@@ -92,7 +91,8 @@
           data: 'mutation{addItem(locationId:"5d1c7a5c21208eb5d689d274", name:"' + "dbgitem " + x +" "+ y +" "+ z + '", price:1){item{name}}}',
 
           success:function(data){
-            console.log(data);
+            var term = $('#search').val();
+            search(term);
           },
 
           error:function(data){
@@ -100,7 +100,45 @@
           }
         });
       }
+      function addItemForm() {
+        $('#detailtext').html(
+          '//ADD NEW ITEM//' +
+          '<br />' +
+          '<input class="ev" id="inpName" placeholder="item name">' +
+          '<input class="ev" id="inpPrice" placeholder="item price">' +
+          '<select id="inpLocation" > <option value="5d1c7a5c21208eb5d689d273">Assembly Room</option> ' +
+          '<option value="5d1c7a5c21208eb5d689d274">Electronics</option> ' +
+          '<option value="5d1c7a5c21208eb5d689d272">Storage Room</option> </select>' +
+          '<br />' +
+          '<button id="add-item-button">add item</button>');
 
+            $('#add-item-button').click(function() {
+              addItem();
+            });
+      }
+      function addItem() {  //\\//\\\//\\//\\//\\\//\\//\\//\\\//\\
+        var inpName = $('#inpName').val();
+        var inpPrice = Number.parseFloat($('#inpPrice').val()).toPrecision(3);
+        var inpLocation = $('#inpLocation option:selected').val();
+        console.log('testNum: ', inpPrice);
+        $.ajax({
+          type: 'POST',
+          url:"/graphql",
+          contentType: "application/graphql",
+          data: 'mutation{addItem(locationId:"' + inpLocation + '",' +
+          ' name:"' + inpName + '",' +
+          ' price:' + inpPrice + '){item{name}}}',
+
+          success:function(data){
+            console.log(data);
+            var term = $('#search').val();
+            search(term);
+          },
+          error:function(data){
+            console.log(data);
+          }
+        });
+      }
       function search(term) {
         $.ajax({
 
@@ -121,11 +159,11 @@
 
               $("#items-table").append(   //\\//\\SET//\\ITEM//\\TABLE//\\//\\
 
-                  '<tr data-id="' + items[i].id + '">' +
-                  '<td class="itemName">' + items[i].name + '</td>' +
-                  '<td class="itemPrice">' + items[i].price + '</td>' +
-                  '<td class="itemLocationName">' + items[i].location.name + '</td>' +
-                  '</tr>');
+                '<tr data-id="' + items[i].id + '">' +
+                '<td class="itemName">' + items[i].name + '</td>' +
+                '<td class="itemPrice">' + items[i].price + '</td>' +
+                '<td class="itemLocationName">' + items[i].location.name + '</td>' +
+                '</tr>');
 
               $('#items-table tr').last().click(function(){
 
@@ -147,26 +185,32 @@
                 $('#detail-pane .btn-delete').click(function() {
                   console.log(itemName, itemPrice, itemLocationName);
                   deleteItem(itemID);
+                  var term = $('#search').val();
+                  console.log(term);
+                  search(term);
                 });
               });
             }
           }
         });
       }
+
       $(document).ready (function() {
         search('');
 
-        $('#tool-pane .btn-add').click(function() {
-          addItem();
-          console.log('debug item added');
+        $('#tool-pane .btn-add-dbg').click(function() {
+          addDebug();
+          console.log('button add debug clicked');
         });
 
+        $('#tool-pane .btn-add').click(function() {
+          addItemForm();
+        });
         $('#search').bind('input propertyChange', function(event){
           console.log(event.target.value);
           search(event.target.value);
         });
       });
-
     </script>
   </body>
 </html>

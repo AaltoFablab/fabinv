@@ -1,4 +1,7 @@
 body {
+  background-color: #121926;
+}
+input {
   background-color: black;
 }
 h4 {
@@ -7,6 +10,9 @@ h4 {
 }
 th, td {
   padding: 6px 8px;
+}
+tr:focus {
+  color: green;
 }
 tr:hover {
   color: #54e362;
@@ -45,6 +51,15 @@ select:focus {
   border: 2px solid #54e362;
   outline: 0;
 }
+select {
+  background-color: black;
+  width: 189px;
+  border-radius: 0px;
+  border: 1px solid white;
+  padding: 0px;
+  padding-left: 7px;
+  color: #6f8bd6;
+}
 #search-box {
   padding-left: 0px;
   margin-left: 0px;
@@ -62,7 +77,7 @@ select:focus {
   height: 40px;
   border: 2px white solid;
   background-color: black;
-  color: green;
+  color: #2e60e8;
   font-size: 20px;
   text-align: left center;
 }
@@ -111,7 +126,7 @@ select:focus {
   letter-spacing: 1px;
 }
 ::placeholder {
-  color: white;
+  color: #6f8bd6;
   font-family: courier;
 }
 table:hover, li:hover {
@@ -120,6 +135,11 @@ table:hover, li:hover {
 button {
   border-color: white;
   color: blue;
+  border-radius: 0px;
+}
+button:focus {
+  color: blue;
+  border-color: white;
 }
 button:hover {
   color: #54e362;
@@ -137,9 +157,18 @@ li {
   padding-left: 10px;
   font-family: courier;
 }
+.ev {
+  padding: 5px;
+}
 .btn-add:hover, .BUTTONONE:hover, li:hover {
   color: #c21ad9;
 }
 .btn-add:active, .BUTTONONE:active, li:active {
   color: yellow;
+}
+.btn-delete, .btn-delete:focus {
+  color: red;
+}
+.btn-delete:active {
+  border-color: purple;
 }
