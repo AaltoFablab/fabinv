@@ -1,20 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-
     <meta charset="utf-8">
     <title>Inventory</title>
     <meta name="description" content="">
     <meta name="author" content="">
-
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/skeleton.css">
     <link rel="stylesheet" href="css/style.css">
-
     <link rel="icon" type="image/png" href="images/icon2.png">
-
   </head>
   <body>
     <div class="container" id="zero">
@@ -30,7 +25,7 @@
       <div class="seven columns" id="tool-pane">
         <ul>
           <li class="btn-add">[new entry]</li>
-          <li class="btn-add-dbg">[dbg entry]</li>
+          <li style="margin-left:30px" class="btn-add-dbg">[dbg entry]</li>
         </ul>
       </div>
       <br />
@@ -49,12 +44,15 @@
         <div class="five columns" id="three">
           <div id="detail-pane">
             <h3 id="headertwo" style="color:red">
-              //Details//
+              Details
             </h3>
             <p id="detailtext">
               Click on items for details.
             </p>
-            <button class="btn-delete" style="float:right">Delete entry</button>
+            <!--Edit Button not functional, can be removed-->
+            <button class="btn-edit u-full-width" style="float:left">Edit details</button>
+            <!-- !!!!!!! -->
+            <button class="btn-delete u-full-width" style="float:right">Delete entry</button>
           </div>
         </div>
       </div>
@@ -62,8 +60,73 @@
     <!--- Change pathing --->                             <!-------->
     <script src="libraries/jquery-3.4.1.min.js"></script>
     <script>
+      var clickID;
+      var clickName;
 
+      function editDetailsForm(itemName, itemID) {
+        $('#detailtext').html(
+        'EDIT DETAILS <br />' +
+        'Edit details for ' + clickName + '<br />' +
+        '<input class="ev" id="inpName" placeholder="item name">' +
+        '<input class="ev" id="inpPrice" placeholder="item price">' +
+        '<select id="inpLocation" > <option value="5d1c7a5c21208eb5d689d273">Assembly Room</option> ' +
+        '<option value="5d1c7a5c21208eb5d689d274">Electronics</option> ' +
+        '<option value="5d1c7a5c21208eb5d689d272">Storage Room</option> </select>' +
+        '<br />' +
+        '<button id="edit-item-button">edit details</button>');
+         console.log(itemName);
+         console.log(itemID);
+         $('#edit-item-button').click(function() {
+           editDetails();
+         });
+      }
+      function editDetails() {
+        var inpName = $('#inpName').val();
+        var inpPrice = Number.parseFloat($('#inpPrice').val()).toFixed(2);
+        var inpLocation = $('#inpLocation option:selected').val();
+        console.log(inpName);
+        console.log(inpPrice);
+        console.log(inpLocation);
+
+        $.ajax({
+          type: 'POST',
+          url:"/graphql",
+          contentType: "application/graphql",
+          data: 'mutation{updateItem(' +
+          'id: "' + clickID + '"' +
+          'locationId: "' + inpLocation + '", ' +
+          'name: "' + inpName + '"' +
+          'price:' + inpPrice + '){ok}}',
+
+          success:function(data){
+            console.log(data);
+            var term = $('#search').val();
+            search(term);
+            $('#detailtext').html(
+            'Item Edited.');
+          },
+          error:function(data){
+            console.log(data);
+          }
+        });
+      }
+      function confirmDelete(itemName, itemID) {
+
+        $('#detailtext').html(
+        '<span id="confirmtxt">Confirm item deletion for </span> <br /> <span  id="itmtxt">' + itemName +
+        '</span><br /><br />' +
+        '<button class="slct" id="confirmDlt">[CONFIRM]</button>');
+
+        $('#confirmDlt').click(function() {
+          deleteItem(itemID);
+          console.log(itemID);
+
+          $('#detailtext').html(
+          'Item Deleted.');
+        });
+      }
       function deleteItem(itemID) {
+        var term = $('#search').val();
         $.ajax({
           type: 'POST',
           url:"/graphql",
@@ -72,8 +135,8 @@
 
           success:function(data){
             console.log(data);
+            search(term);
           },
-
           error:function(data){
             console.log(data);
           }
@@ -93,6 +156,9 @@
           success:function(data){
             var term = $('#search').val();
             search(term);
+
+            $('#detailtext').html(
+            'Item Added.');
           },
 
           error:function(data){
@@ -102,7 +168,7 @@
       }
       function addItemForm() {
         $('#detailtext').html(
-          '//ADD NEW ITEM//' +
+          'ADD NEW ITEM' +
           '<br />' +
           '<input class="ev" id="inpName" placeholder="item name">' +
           '<input class="ev" id="inpPrice" placeholder="item price">' +
@@ -118,7 +184,9 @@
       }
       function addItem() {  //\\//\\\//\\//\\//\\\//\\//\\//\\\//\\
         var inpName = $('#inpName').val();
-        var inpPrice = Number.parseFloat($('#inpPrice').val()).toPrecision(3);
+        //
+        var inpPrice = Number.parseFloat($('#inpPrice').val()).toFixed(2);
+        //
         var inpLocation = $('#inpLocation option:selected').val();
         console.log('testNum: ', inpPrice);
         $.ajax({
@@ -133,6 +201,8 @@
             console.log(data);
             var term = $('#search').val();
             search(term);
+            $('#detailtext').html(
+            'Item Added.');
           },
           error:function(data){
             console.log(data);
@@ -171,6 +241,8 @@
                 var itemPrice = $(this).find('.itemPrice').first().text();
                 var itemLocationName = $(this).find('.itemLocationName').first().text();
                 var itemID = $(this).data('id');
+                clickID = itemID;
+                clickName = itemName;
                 console.log( itemName, itemPrice, itemLocationName, itemID);
 
                 $('#detailtext').html(
@@ -179,34 +251,35 @@
                   'Item Price: ' + itemPrice + '<br><br>' +
                   'Item Location: ' + itemLocationName );
 
-                  //
-
                 $('#detail-pane .btn-delete').unbind('click');
                 $('#detail-pane .btn-delete').click(function() {
                   console.log(itemName, itemPrice, itemLocationName);
-                  deleteItem(itemID);
-                  var term = $('#search').val();
+                  confirmDelete(itemName, itemID);
+
                   console.log(term);
-                  search(term);
                 });
               });
             }
           }
         });
       }
-
       $(document).ready (function() {
         search('');
+
+        var itemName = $(this).find('.itemName').first().text();
+        var itemID = $(this).data('id');
 
         $('#tool-pane .btn-add-dbg').click(function() {
           addDebug();
           console.log('button add debug clicked');
         });
-
         $('#tool-pane .btn-add').click(function() {
           addItemForm();
         });
-        $('#search').bind('input propertyChange', function(event){
+        $('.btn-edit').click(function(){
+          editDetailsForm(itemName, itemID);
+        });
+        $('#search').bind('input propertyChange', function(event) {
           console.log(event.target.value);
           search(event.target.value);
         });

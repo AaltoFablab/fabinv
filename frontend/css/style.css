@@ -1,12 +1,27 @@
 body {
   background-color: #121926;
+  font-family: helvetica;
+}
+#confirmtxt {
+  color: white;
+}
+#itmtxt {
+  color: #38eabb;
+}
+span {
+  color: blue;
+  padding: 10px;
+}
+.slct:hover {
+  color: #ff02bf;
+  cursor: pointer;
 }
 input {
   background-color: black;
 }
 h4 {
   font-size: 50px;
-  font-family: courier;
+  font-family: helvetica;
 }
 th, td {
   padding: 6px 8px;
@@ -22,7 +37,7 @@ tr:active {
 }
 h3 {
   color: red;
-  font-family: courier;
+  font-family: helvetica;
 }
 #titled {
   border-bottom: 1px white solid;
@@ -33,11 +48,13 @@ input[type="search"],
 input[type="text"] {
   background-color: black;
   border-radius: 0px;
-  border: 1px white solid;
+  border-bottom: : 1px white solid;
   box-sizing: none;
   height: 30px;
   float: left;
-  font-family: courier;
+  font-family: helvetica;
+  border: none;
+  border-bottom: 1px solid white;
 }
 input[type="email"]:focus,
 input[type="number"]:focus,
@@ -48,14 +65,15 @@ input[type="url"]:focus,
 input[type="password"]:focus,
 textarea:focus,
 select:focus {
-  border: 2px solid #54e362;
+  border: none;
+  border-bottom: 1px solid #54e362;
   outline: 0;
 }
 select {
   background-color: black;
   width: 189px;
   border-radius: 0px;
-  border: 1px solid white;
+  border-bottom: 1px solid white;
   padding: 0px;
   padding-left: 7px;
   color: #6f8bd6;
@@ -64,7 +82,6 @@ select {
   padding-left: 0px;
   margin-left: 0px;
   height: 40px;
-  border: 1px white solid;
 
   background-color: gray;
 }
@@ -75,7 +92,7 @@ select {
 }
 #tool-pane {
   height: 40px;
-  border: 2px white solid;
+  border-bottom: 1px white solid;
   background-color: black;
   color: #2e60e8;
   font-size: 20px;
@@ -93,25 +110,24 @@ select {
   color: white;
   padding: 10px;
   padding-bottom: 0px;
-  border: 2px white solid;
 
-  font-family: courier;
+  font-family: helvetica;
 }
 #three {
   background-color: black;
   color: white;
   padding: 10px;
   padding-bottom: 0px;
-  border: 2px white solid;
+  border-bottom: 1px white solid;
 
-  font-family: courier;
+  font-family: helvetica;
 }
 #items-table {
 
 }
 #header {
   margin-top: 50px;
-  border: 2px white solid;
+  border-bottom: 1px white solid;
   background-color: black;
 }
 #headerone {
@@ -127,7 +143,7 @@ select {
 }
 ::placeholder {
   color: #6f8bd6;
-  font-family: courier;
+  font-family: helvetica;
 }
 table:hover, li:hover {
   cursor: pointer;
@@ -153,20 +169,23 @@ ul {
 }
 li {
   float: left;
-  display: block;
-  padding-left: 10px;
-  font-family: courier;
+  margin-left: 10px;
+  font-family: helvetica;
 }
 .ev {
   padding: 5px;
 }
-.btn-add:hover, .BUTTONONE:hover, li:hover {
+.btn-add:hover,
+.BUTTONONE:hover, li:hover {
   color: #c21ad9;
 }
-.btn-add:active, .BUTTONONE:active, li:active {
+.btn-add:active,
+.BUTTONONE:active, li:active {
   color: yellow;
 }
-.btn-delete, .btn-delete:focus {
+.btn-delete,
+.btn-delete:focus, .btn-edit,
+.btn-edit:focus {
   color: red;
 }
 .btn-delete:active {
